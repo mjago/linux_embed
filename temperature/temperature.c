@@ -29,7 +29,7 @@ int main(int argc, char **argv)
 
   if(i2c != NULL)
     {
-    for(i = 0; i < 1; i++)
+    for(i = 0; i < 10; i++)
       {
         print_temp(read_temp(i2c));
         usleep(1000000);
