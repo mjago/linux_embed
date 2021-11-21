@@ -10,17 +10,6 @@ i2c_t * i2c_start(char * dev, int addr)
   return temp_init(addr, dev);
 }
 
-/******* Disconnect *******/
-
-bool i2c_stop(i2c_t * d)
-{
-  bool return_val = 0;
-  if(temp_close(d))
-    {
-      return_val = 0;
-    }
-}
-
 /******* print temp *******/
 
 void print_temp(float temp)
@@ -40,13 +29,18 @@ int main(int argc, char **argv)
 
   if(i2c != NULL)
     {
-    for(i = 0; i < 1000000; i++)
+    for(i = 0; i < 1; i++)
       {
         print_temp(read_temp(i2c));
         usleep(1000000);
       }
 
-    return_val = i2c_stop(i2c);
+    return_val = temp_close(i2c);
+    }
+
+  if(return_val != 0)
+    {
+      fprintf(stderr, "Error reading Temperature!\n");
     }
 
   return return_val;
