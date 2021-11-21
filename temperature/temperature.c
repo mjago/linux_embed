@@ -26,10 +26,13 @@ int main(int argc, char **argv)
   int i;
 
   i2c = i2c_start(I2C_DEV_NAME, I2C_ADDR_0);
-
-  if(i2c != NULL)
+  if((i2c != NULL)          &&
+     (verify_manuf_id(i2c)) &&
+     (verify_dev_id(i2c))   &&
+     ( ! write_critical(i2c))  &&
+     ( ! nwrite_cfg(i2c))        )
     {
-    for(i = 0; i < 10; i++)
+    for(i = 0; ; i++)
       {
         print_temp(read_temp(i2c));
         usleep(1000000);

@@ -14,6 +14,9 @@
 /******** Prototypes ********/
 
 static int i2c_read_word_swapped(int file, char cmd);
+static int i2c_write_word_swapped(int file, char cmd, int value);
+static int set_i2c_slave(mcp9808_t * s);
+static bool get_address(int address, mcp9808_t * s);
 static void  error_cleanup(mcp9808_t * s);
 static bool get_device(const char * filepath, mcp9808_t * s);
 static bool i2c_connect(mcp9808_t * s);
@@ -22,15 +25,36 @@ static bool i2c_connect(mcp9808_t * s);
 
 static int i2c_read_word_swapped(int file, char cmd)
 {
-   int value = i2c_smbus_read_word_data(file, cmd);
+  int value = i2c_smbus_read_word_data(file, cmd);
    return (value < 0) ? value : (__u16)__builtin_bswap16((__u16)(value));
 }
 
-/* Set address */
+static int i2c_write_word_swapped(int file, char cmd, int value)
+{
+  int swap = (value < 0) ? value : (__u16)__builtin_bswap16((__u16)(value));
+  return i2c_smbus_write_word_data(file, cmd, swap);
+}
 
-static int mcp9808_set_addr(mcp9808_t * s)
+/* Set i2c slave */
+
+static int set_i2c_slave(mcp9808_t * s)
 {
   return ioctl(s -> file, I2C_SLAVE, s -> address);
+}
+
+/* get address */
+
+static bool get_address(int address, mcp9808_t * s)
+{
+  bool return_val = false;
+
+  if(s != NULL)
+    {
+      s -> address = address;
+      return_val = true;
+    }
+
+  return return_val;
 }
 
 /* error cleanup */
@@ -48,21 +72,6 @@ static void  error_cleanup(mcp9808_t * s)
       s = NULL;
     }
   exit(1);
-}
-
-/* get address */
-
-static bool get_address(int address, mcp9808_t * s)
-{
-  bool return_val = false;
-
-  if(s != NULL)
-    {
-      s -> address = address;
-      return_val = true;
-    }
-
-  return return_val;
 }
 
 /* get device */
@@ -100,7 +109,7 @@ static bool i2c_connect(mcp9808_t * s)
     }
   else
     {
-      if(mcp9808_set_addr(s) < 0)
+      if(set_i2c_slave(s) < 0)
         {
           error_cleanup(s);
         }
@@ -163,13 +172,57 @@ bool temp_close(mcp9808_t * s)
   return return_val;
 }
 
+bool verify_manuf_id(mcp9808_t * s)
+{
+  int val = i2c_read_word_swapped(s -> file, REG_MID);
+  return (val & 0xFFFF) == MANUF_ID;
+}
+
+bool verify_dev_id(mcp9808_t * s)
+{
+  int val = i2c_read_word_swapped(s -> file, REG_DID);
+  return (val & 0xFFFF) == DEV_ID;
+}
+
+bool write_cfg(mcp9808_t * s)
+{
+  //  fedcba9876543210
+  //  0000 0010 0001 1110
+  //  0   2    1    E
+  return i2c_write_word_swapped(s -> file, REG_CFG, 0x021E);
+}
+
+bool write_critical(mcp9808_t * s)
+{
+  //  fedcba9876543210
+  //  000000110000000
+  //  0  1   8   0
+  return i2c_write_word_swapped(s -> file, REG_CR, 0x0180);
+}
+
+bool write_max(mcp9808_t * s)
+{
+  //  fedcba9876543210
+  //
+  //
+  return i2c_write_word_swapped(s -> file, REG_CR, 0x0180);
+}
+
+bool write_min(mcp9808_t * s)
+{
+  //  fedcba9876543210
+  //
+  //
+  return i2c_write_word_swapped(s -> file, REG_CR, 0x0180);
+}
+
 /******* read_temp *******/
 
 float  read_temp(mcp9808_t * s)
 {
   uint16_t raw_temp;
 
-  raw_temp = i2c_read_word_swapped(s -> file, MCP9808_REG_TMP);
+  raw_temp = i2c_read_word_swapped(s -> file, REG_TMP);
   return parse_temp(raw_temp);
 }
 
