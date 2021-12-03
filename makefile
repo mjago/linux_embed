@@ -1,6 +1,6 @@
-TARGET_EXEC ?= readtemp
+TARGET_EXEC ?= ctemp
 BUILD_DIR ?= ./build
-SRC_DIRS := ./temperature
+SRC_DIRS := ./ctrltemp
 
 SRCS := $(shell find $(SRC_DIRS) -name '*.c')
 OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
@@ -12,7 +12,7 @@ INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 CPPFLAGS ?= $(INC_FLAGS) -MMD -MP
 
 $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
-	$(CC) $(OBJS) -o $@ $(LDFLAGS)
+	$(CC) $(OBJS) -o $@ -lm $(LDFLAGS)
 
 # assembly
 $(BUILD_DIR)/%.s.o: %.s

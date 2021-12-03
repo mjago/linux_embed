@@ -1,3 +1,5 @@
+#ifndef _MCP9808_H
+#define _MCP9808_H
 #include <stdbool.h>
 
 #define REG_CFG      0x01
@@ -32,3 +34,6 @@ bool        write_critical(mcp9808_t * s);
 bool        write_max(mcp9808_t * s);
 bool        write_min(mcp9808_t * s);
 float       read_temp(mcp9808_t * s);
+
+#endif /* _MCP9808_H */
+

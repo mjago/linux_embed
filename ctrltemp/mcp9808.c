@@ -6,7 +6,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <linux/i2c-dev.h>
-#include <i2c/smbus.h>
+//#include <i2c/smbus.h>
 #include <sys/ioctl.h>
 #include "smbus.h"
 #include "mcp9808.h"
