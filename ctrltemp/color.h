@@ -30,7 +30,7 @@ void color_shift(void);
 void ctrl_c_handler(int signum);
 void color_setup_hdl(void);
 void color_sequence(ws2811_t * led);
-void color_solid(int color, ws2811_t * led);
+void color_solid(ws2811_t * led);
 void color_init(ws2811_t * led);
 bool is_exit(void);
 

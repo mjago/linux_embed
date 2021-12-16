@@ -27,16 +27,17 @@ ws2811_led_t dotcolors[] =
 };
 
 ws2811_led_t * matrix;
-static uint8_t running = 1;
+uint8_t running = 1;
 
 void color_render(ws2811_t * led)
 {
     ws2811_return_t ret;
     int x;
 
-    for (x = 0; x < 10; x++)
+    for(x = 0; x < 5; x++)
     {
-        led -> channel[0].leds[x] = matrix[x];
+      led -> channel[0].leds[(4 - x)] = matrix[x];
+      led -> channel[0].leds[(5 + x)] = matrix[x];
     }
     if ((ret = ws2811_render(led)) != WS2811_SUCCESS)
     {
@@ -64,16 +65,12 @@ void color_shift(void)
 
     for(i = 9; i >= 0; i--)
     {
-        if(idx >= 8) { idx = 0; }
-        matrix[i] = dotcolors[idx];
+        if(idx >= 8) { idx = 1; }
+          matrix[i] = dotcolors[idx];
         idx++;
     }
-    matrix[0] = dotcolors[OFF];
-    matrix[4] = dotcolors[OFF];
-    matrix[5] = dotcolors[OFF];
-    matrix[9] = dotcolors[OFF];
     idx = temp += 1;
-    if(idx >= 8) { idx = 0; }
+    if(idx >= 8) { idx = 1; }
 }
 
 void ctrl_c_handler(int signum)
@@ -100,18 +97,17 @@ void color_setup_hdl(void)
 
 void color_sequence(ws2811_t * led)
 {
-        color_shift();
-        color_render(led);
+    color_shift();
+    color_render(led);
 
 }
 
-void color_solid(int color, ws2811_t * led)
+void color_solid(ws2811_t * led)
 {
     int i;
-
-    for(i = 0; i < 10; i++)
+    for(i = 1; i < 10; i++)
       {
-        matrix[i] = dotcolors[color];
+        matrix[i] = matrix[0];
       }
     color_render(led);
 }

@@ -7,8 +7,10 @@
 typedef mcp9808_t    i2c_t;
 
 int tempinit(void);
-bool tempprocess(void);
+void tempprocess(int id, char * stemp);
 bool tempclose(void);
+bool temphi(void);
+bool templow(void);
 
 #endif /* ! _TEMPERATURE_H */
 

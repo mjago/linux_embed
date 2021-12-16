@@ -12,7 +12,7 @@ INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 CPPFLAGS ?= $(INC_FLAGS) -MMD -MP
 
 $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
-	$(CC) $(OBJS) -o $@ -lm $(LDFLAGS)
+	$(CC) $(OBJS) -o $@ -lm -I/usr/local/include -L/usr/local/lib -lwiringPi -lpaho-mqtt3c $(LDFLAGS)
 
 # assembly
 $(BUILD_DIR)/%.s.o: %.s

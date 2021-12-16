@@ -1,10 +1,12 @@
 #include <unistd.h>
 #include <stdio.h>
+#include <stdbool.h>
 #include "mcp9808.h"
 #include "temperature.h"
 
 i2c_t * i2c0;
 i2c_t * i2c1;
+float   temp = 22.0;
 
 /******* Connect *******/
 
@@ -40,12 +42,35 @@ int tempinit(void)
   return return_val;
 }
 
-bool tempprocess(void)
+bool temphi(void)
+{
+   return (temp >= 22.0);
+}
+
+bool templow(void)
+{
+   return (temp <= 20.0);
+}
+
+void tempprocess(int id, char * stemp)
 {
   int i;
   bool return_val = 1;
 
-  print_temps(read_temp(i2c0), read_temp(i2c1));
+  switch(id)
+  {
+    case 0:
+      temp = read_temp(i2c0);
+      sprintf(stemp, "%0.2f", temp);
+      printf("temps: %s, ", stemp);
+      break;
+
+    default:
+      temp = read_temp(i2c1);
+      sprintf(stemp, "%0.2f", temp);
+      printf("%s\n", stemp);
+      break;
+  }
 }
 
 bool tempclose(void)
