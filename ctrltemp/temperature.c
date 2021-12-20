@@ -13,13 +13,7 @@ float   temp = 22.0;
 i2c_t * i2c_start(char * dev, int addr)
 {
   return temp_init(addr, dev);
-}
-
-/******* print temp *******/
-
-void print_temps(float temp1, float temp2)
-{
-  printf("temperatures: %0.2f, %0.2f\n", temp1, temp2);
+  printf("\n\n\n");
 }
 
 /******* Main *******/
@@ -61,16 +55,15 @@ void tempprocess(int id, char * stemp)
   {
     case 0:
       temp = read_temp(i2c0);
-      sprintf(stemp, "%0.2f", temp);
-      printf("temps: %s, ", stemp);
+      printf("  temperatures: %0.2f, ", temp);
       break;
 
     default:
-      temp = read_temp(i2c1);
-      sprintf(stemp, "%0.2f", temp);
-      printf("%s\n", stemp);
+      printf("%0.2f     \r", temp);
+      fflush(stdout);
       break;
   }
+  sprintf(stemp, "%0.2f", temp);
 }
 
 bool tempclose(void)

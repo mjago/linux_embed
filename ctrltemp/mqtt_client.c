@@ -64,11 +64,11 @@ void mqtt_temperatures(char * stemp1, char * stemp2)
     pubmsg.qos = QOS;
     pubmsg.retained = 0;
     MQTTClient_publishMessage(client, TOPIC2, &pubmsg, &token);
-    printf("Waiting for up to %d seconds for publication of %s\n"
-          "on topic %s for client with ClientID: %s\n",
-          (int)(TIMEOUT/1000), stemp1, TOPIC1, CLIENTID);
+//    printf("Waiting for up to %d seconds for publication of %s\n"
+//          "on topic %s for client with ClientID: %s\n",
+//          (int)(TIMEOUT/1000), stemp1, TOPIC1, CLIENTID);
     rc = MQTTClient_waitForCompletion(client, token, TIMEOUT);
-    printf("Message with delivery token %d delivered\n\n", token);
+//    printf("Message with delivery token %d delivered\n\n", token);
 }
 
 void mqtt_close(void)
