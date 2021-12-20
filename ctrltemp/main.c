@@ -3,37 +3,7 @@
 #include "color.h"
 #include "temperature.h"
 #include "mqtt_client.h"
-
-#define LED   3
-#define RLY_0 0
-#define RLY_1 2
-
-bool green_led = 1;
-
-
-void discrete_led_init(void)
-{
-    wiringPiSetup();
-    pinMode(LED, OUTPUT);
-    pinMode(RLY_0, OUTPUT);
-    pinMode(RLY_1, OUTPUT);
-    digitalWrite(LED, green_led);
-    digitalWrite(RLY_0, 1);
-    digitalWrite(RLY_1, 1);
-}
-
-void discrete_led_toggle(void)
-{
-    green_led = ! green_led;
-    digitalWrite(LED, green_led);
-}
-
-void discrete_led_exit(void)
-{
-    pinMode(LED, INPUT);
-    pinMode(RLY_0, INPUT);
-    pinMode(RLY_1, INPUT);
-}
+#include "led.h"
 
 int main(int argc, char *argv[])
 {
