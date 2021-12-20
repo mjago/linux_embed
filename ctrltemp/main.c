@@ -4,6 +4,10 @@
 #include "temperature.h"
 #include "mqtt_client.h"
 #include "led.h"
+#include "relay.h"
+
+#define ON  1
+#define OFF 0
 
 int main(int argc, char *argv[])
 {
@@ -17,8 +21,8 @@ int main(int argc, char *argv[])
     color_init(&led);
     tempinit();
     discrete_led_init();
+    relay_init();
     mqtt_init();
-
     while ( ! is_exit())
     {
         if(toggle)
@@ -44,18 +48,16 @@ int main(int argc, char *argv[])
                 {
                   if(temphi())
                   {
-                    heat_on = 0;
-                    digitalWrite(RLY_0, 1);
-                    digitalWrite(RLY_1, 1);
+                    heat_on = OFF;
+                    heat_switch(OFF);
                   }
                 }
                 else
                 {
                   if(templow())
                   {
-                    heat_on = 1;
-                    digitalWrite(RLY_0, 0);
-                    digitalWrite(RLY_1, 0);
+                    heat_on = ON;
+                    heat_switch(ON);
                   }
                 }
                 mqtt_temperatures(stemp0, stemp1);
